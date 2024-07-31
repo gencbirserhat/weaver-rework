@@ -1,0 +1,18 @@
+export default {
+  bg: 'rgba(245, 246, 248, 1)',
+  white: 'rgba(255, 255, 255, 1)',
+  whiteOpacity: 'rgba(255, 255, 255, 0)',
+  orange: '#D05515',
+  orangeLight: '#FBE9E7',
+  grey: 'rgba(113, 128, 134, 1)',
+  greyLight: 'rgba(113, 128, 134, .08)',
+  greyCardBackground: '#F5F6F8',
+  blue: 'rgba(52, 152, 219, 1)',
+  blueLight: 'rgba(52, 152, 219, .12)',
+  green: 'rgba(39, 174, 96, 1)',
+  greenLight: 'rgba(39, 174, 96, .12)',
+  red: 'rgba(192, 57, 43, 1)',
+  redLight: 'rgba(192, 57, 43, .12)',
+  blackLight: 'rgba(0,0,0,.12)',
+  overlay: 'rgba(77, 77, 77, 0.75)',
+};

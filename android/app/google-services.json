@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "519039287798",
+    "project_id": "weaver-aselsis",
+    "storage_bucket": "weaver-aselsis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519039287798:android:cd5f4f0af1d6ad337007d7",
+        "android_client_info": {
+          "package_name": "com.weavergps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519039287798-eo2cdd8jhh3ll649om3arde0nokl5pnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwIFNrAsY9pvOJfBIkk4hFIDUi_2UJPUs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519039287798-eo2cdd8jhh3ll649om3arde0nokl5pnj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "519039287798-jdjsba5cdvo5cinb7gcer72k9gscs6cm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.damlatur.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

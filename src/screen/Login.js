@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, StyleSheet, Platform, SafeAreaView, Modal, Text, TextInput, TouchableOpacity, View, Alert, KeyboardAvoidingView, } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { Dimensions, Image, StyleSheet, Platform, SafeAreaView, Modal, Text, TextInput, TouchableOpacity, View, Alert, KeyboardAvoidingView } from 'react-native';
 import Logo from "../assets/logo.png";
 import CheckBox from '@react-native-community/checkbox';
 import { loginRequest, meRequest, updateDeviceTokenRequest } from '../api/controllers/account-controller';
@@ -9,10 +9,11 @@ import Loading from '../components/Loading';
 import { firebase } from '@react-native-firebase/messaging';
 import MaskInput from 'react-native-mask-input';
 import { useTranslation } from "react-i18next";
-import * as RNLocalize from "react-native-localize"
-import tr from "../assets/Turk.png"
-import en from "../assets/English.png"
-import NotificationsRounded from '../assets/NotificationsRounded.png'
+import * as RNLocalize from "react-native-localize";
+import tr from "../assets/Turk.png";
+import en from "../assets/English.png";
+import NotificationsRounded from '../assets/NotificationsRounded.png';
+
 const { width, height } = Dimensions.get("window")
 const Login = () => {
     const { t, i18n } = useTranslation();

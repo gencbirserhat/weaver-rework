@@ -5,6 +5,6 @@ module.exports = {
     'module:@react-native/babel-preset'
   ],
   plugins: [
-    'module:@babel/plugin-transform-react-jsx'
+    
   ]
 };

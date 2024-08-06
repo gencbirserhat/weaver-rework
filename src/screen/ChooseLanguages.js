@@ -57,6 +57,7 @@ const ChooseLanguages = () => {
         </SafeAreaView>
     )
 }
+export default ChooseLanguages
 
 const styles = StyleSheet.create({
     container: {
@@ -101,4 +102,3 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ChooseLanguages

@@ -15,6 +15,7 @@ const IntroScreen = () => {
         </View>
     );
 };
+export default IntroScreen;
 
 const styles = StyleSheet.create({
     root: {
@@ -34,4 +35,3 @@ const styles = StyleSheet.create({
     }
 })
 
-export default IntroScreen;

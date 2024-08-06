@@ -8,7 +8,7 @@ import LocalGasStationRounded from '../assets/LocalGasStationRounded.png'
 import { getCurrentFuelPricesRequest, getDashBoardStatisticsRequest, getMemberMyVehiclesInformation, getMyVehiclesInformationRequest, getTrackableInformationRequest, getTrackableVehiclesRequest } from '../api/controllers/vehicle-controller';
 const { width, height } = Dimensions.get("window")
 import Swiper from 'react-native-swiper'
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Carousel from "react-native-snap-carousel"
 import { useTranslation } from 'react-i18next';
 const Dashboard = ({ navigation }) => {
     const { t } = useTranslation()
@@ -223,6 +223,8 @@ const Dashboard = ({ navigation }) => {
     );
 };
 
+export default Dashboard;
+
 const styles = StyleSheet.create({
     root: {
         flex: 1,
@@ -359,4 +361,3 @@ const styles = StyleSheet.create({
 
 })
 
-export default Dashboard;

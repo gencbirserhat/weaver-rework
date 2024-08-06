@@ -307,6 +307,7 @@ const AracEkleEdit = ({ route }) => {
         </SafeAreaView >
     )
 }
+export default AracEkleEdit
 
 const styles = StyleSheet.create({
     input: {
@@ -386,4 +387,3 @@ const styles = StyleSheet.create({
 
 })
 
-export default AracEkleEdit

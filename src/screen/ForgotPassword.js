@@ -121,6 +121,7 @@ const Login = () => {
         </View>
     );
 };
+export default Login;
 
 const styles = StyleSheet.create({
     root: {
@@ -225,4 +226,3 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Login;

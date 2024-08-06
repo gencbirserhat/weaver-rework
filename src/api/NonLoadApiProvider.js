@@ -1,6 +1,8 @@
 import axios from 'axios';
-export const BASE_URL = "https://weavergps.com"
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
+export const BASE_URL = "https://weavergps.com"
+
 const NonLoadApiProvider = axios.create({
     baseURL : `${BASE_URL}/api/v1`
 });

@@ -279,6 +279,8 @@ const AracEkle = () => {
     )
 }
 
+export default AracEkle
+
 const styles = StyleSheet.create({
     Card: {
     },
@@ -359,4 +361,3 @@ const styles = StyleSheet.create({
 
 })
 
-export default AracEkle

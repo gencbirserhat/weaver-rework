@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ForwardedRef } from "react";
 import WebView from "react-native-webview";
 
 function getHtml() {
@@ -8,43 +8,49 @@ function getHtml() {
     return html;
 }
 
-const SVGatorComponent = React.forwardRef((props, ref) => {
-    let newProps = {...props};
+interface SVGatorComponentProps {
+    width?: number;
+    height?: number;
+    [key: string]: any;
+}
 
+
+const SVGatorComponent = React.forwardRef((props: SVGatorComponentProps, ref: ForwardedRef<WebView>) => {
+    let newProps = { ...props };
     const html = getHtml();
 
-    let attrs = {};
-    let attrMatch = html.match(/<svg(.*?)>/)[1].match(/[a-z0-9]+\=['"]([^'"]+)['"]/ig) || [];
+    let attrs: { [key: string]: any } = {};
+    let attrMatch: string[] = html.match(/<svg(.*?)>/)?.[1].match(/[a-z0-9]+\=['"]([^'"]+)['"]/ig) || [];
     attrMatch.forEach(attr => {
         let parts = attr.split('=', 2);
-        let key = parts.shift().toLowerCase();
-        let value = parts.join('=');
-        value = value.replace(/^['"]+|['"]+$/g, '');
+        let key = parts.shift()?.toLowerCase() || '';
+        let value = parts.join('=').replace(/^['"]+|['"]+$/g, '');
         attrs[key] = value;
     });
 
-    let viewBox = attrs.viewbox ? attrs.viewbox.split(' ') : [];
-    let svgWidth = attrs.width ? attrs.width : viewBox[2] || 100;
-    let svgHeight = attrs.height ? attrs.height : viewBox[3] || 100;
+    let viewBox: string[] = attrs.viewbox ? attrs.viewbox.split(' ') : [];
+    let svgWidth: string | number = attrs.width ? attrs.width : viewBox[2] || '100';
+    let svgHeight: string | number = attrs.height ? attrs.height : viewBox[3] || '100';
 
     if (!newProps.hasOwnProperty('width') && svgWidth) {
-        newProps.width = svgWidth;
+        newProps.width = parseInt(svgWidth as string);
     }
 
     if (!newProps.hasOwnProperty('height') && svgHeight) {
-        let ratio = Math.min(newProps.width / svgWidth, 1);
-        newProps.height = ratio * svgHeight;
+        let ratio = Math.min((newProps.width as number) / parseInt(svgWidth as string), 1);
+        newProps.height = ratio * parseInt(svgHeight as string);
     }
     if (newProps.width) {
-        newProps.width = parseInt(newProps.width);
+        newProps.width = parseInt(newProps.width as unknown as string);
     }
     if (newProps.height) {
-        newProps.height = parseInt(newProps.height);
+        newProps.height = parseInt(newProps.height as unknown as string);
     }
 
     return (
-        <WebView ref={ref} {...newProps} source={{html}} containerStyle={{flex: 0}} style={{backgroundColor: "transparent", flex: 0}}/>
+        <WebView ref={ref} {...newProps} source={{ html }} containerStyle={{ flex: 0 }} style={{ backgroundColor: "transparent", flex: 0 }} />
     );
 });
+
 
 export default SVGatorComponent;

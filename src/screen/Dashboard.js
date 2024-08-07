@@ -213,10 +213,8 @@ const Dashboard = ({ navigation }) => {
                     renderItem={_renderItem}
                     sliderWidth={width * 0.95}
                     itemWidth={width * 0.95}
+                    slideStyle={null}
                 >
-
-
-
                 </Carousel>
             </ScrollView>
         </SafeAreaView>

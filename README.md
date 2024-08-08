@@ -13,25 +13,7 @@ This project created with React Native Community CLI
 yarn install
 ```
 
-## Step 2: Fix Deprecated Object (IMPORTANT)
-!! If you do not complete this step, the project WILL NOT RUN. !!
-### OPEN:
-
-``node_modules\react-native-snap-carousel\src\carousel\Carousel.js``
-
-``node_modules\react-native-snap-carousel\src\pagination\Pagination.js``
-
-``node_modules\react-native-snap-carousel\src\pagination\PaginationDot.js``
-
-``node_modules\react-native-snap-carousel\src\parallaximage\ParallaxImage.js``
-
-### CHANGE IMPORTS:
-
-1. Delete all ``` import {..., WiewPropTypes, ...} from 'react-native' ``` (Just delete the ViewPropTypes field)
-
-2. Add ``` import ViewPropTypes from "deprecated-react-native-prop-types"; ```
-
-## Step 3: Start your Application
+## Step 2: Start your Application
 ### For Android
 
 ```bash

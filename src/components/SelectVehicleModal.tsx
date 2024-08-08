@@ -1,48 +1,74 @@
 import React from "react";
 import { Component } from "react";
-import { Image, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import error from '../assets/error.png'
-import SpeedRounded from '../assets/SpeedRounded.png'
-import KontakOpen from '../assets/KontakOpen.png'
-import KontakClose from '../assets/KontakClose.png'
-import KontakWaiting from '../assets/KontakWaiting.png'
-import { Icon, Input, } from '@ui-kitten/components';
-import { withTranslation } from "react-i18next";
+import { Image, ImageURISource, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Input, } from '@ui-kitten/components';
+import { WithTranslation, withTranslation } from "react-i18next";
 
 
-class SelectVehicleModal extends Component {
+const SpeedRounded: ImageURISource= require( '../assets/SpeedRounded.png')
+const KontakOpen: ImageURISource= require( '../assets/KontakOpen.png')
+const KontakClose: ImageURISource= require( '../assets/KontakClose.png')
+const KontakWaiting: ImageURISource= require( '../assets/KontakWaiting.png')
+
+interface LastLog {
+    speedKmh : number;
+    status : "STARTED" | "STOPPED" | "MOVING";
+}
+
+interface Vehicle { 
+    licensePlate: string;
+    vehicleName: string;
+    totalDistanceKm: number;
+    lastLog: LastLog;
+}
+
+interface SelectVehicleModalState {
+    visible: boolean;
+    vehicles: Vehicle[];
+    searchValue: string;
+}
+
+
+interface SelectVehicleModalProps extends WithTranslation {
+    onVehicleSelect: (vehicle: Vehicle) => void;
+}
+
+class SelectVehicleModal extends Component<SelectVehicleModalProps, SelectVehicleModalState> {
     imageMap = new Map()
-    constructor(props) {
+    constructor(props : SelectVehicleModalProps) {
         super(props)
         this.state = {
             visible: false,
             vehicles: [],
             searchValue: "",
         };
-        this.imageMap["STARTED"] = KontakWaiting;
-        this.imageMap["STOPPED"] = KontakClose;
-        this.imageMap["MOVING"] = KontakOpen;
+        this.imageMap.set("STARTED", KontakWaiting);
+        this.imageMap.set("STOPPED", KontakClose);
+        this.imageMap.set("MOVING", KontakOpen);
     }
 
-    setVisible(value) {
+    setVisible(value: boolean) {
         this.setState({
             visible: value,
         });
     }
 
-    setVehicles(vehicles) {
+    setVehicles(vehicles: Vehicle[]){
         this.setState({
             vehicles: vehicles,
         });
         //   console.log(vehicles)
     }
-    float2int(value) {
+    float2int(value:number):number {
         return value | 0;
     }
 
-    searchVehicle() {
+    searchVehicle(text: string = this.state.searchValue) {
 
-        let newList = this.state.vehicles.filter(x => String(x.licensePlate).toLowerCase().includes(this.state.searchValue) || String(x.vehicleName).toLowerCase().includes(this.state.searchValue) || String(x.totalDistanceKm).toLowerCase().includes(this.state.searchValue))
+        let newList = this.state.vehicles.filter(x => 
+            String(x.licensePlate).toLowerCase().includes(this.state.searchValue) || 
+            String(x.vehicleName).toLowerCase().includes(this.state.searchValue) || 
+            String(x.totalDistanceKm).toLowerCase().includes(this.state.searchValue))
         return newList
 
     }
@@ -82,7 +108,7 @@ class SelectVehicleModal extends Component {
                             <Input
                                 /* label={"arac_adi_z"} */
                                 placeholder={t("Araçlar içinde arama yapabilirsiniz")}
-                                value={this.searchValue}
+                                value={this.state.searchValue}
                                 onChange={(e) => {
                                     this.setState({ searchValue: e.nativeEvent.text })
                                     this.searchVehicle(e.nativeEvent.text)
@@ -104,7 +130,7 @@ class SelectVehicleModal extends Component {
                                             <Text style={{ color: '#3C3C3B', marginLeft: 5 }}>{this.float2int(vehicle?.lastLog?.speedKmh)} Km/H</Text>
                                         </View>
                                         <View style={{ justifyContent: 'flex-end', flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={this.imageMap[vehicle?.lastLog?.status]} style={styles.icon} />
+                                            <Image source={this.imageMap.get(vehicle?.lastLog?.status)} style={styles.icon} />
                                         </View>
                                     </TouchableOpacity>
 
@@ -141,6 +167,14 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
 
+    },
+    input: {
+        width: '100%',
+        height: 40,
+        paddingHorizontal: 10,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 4,
     },
     topModal: {
         width: '100%',

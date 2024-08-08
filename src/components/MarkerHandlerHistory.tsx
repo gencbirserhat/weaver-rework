@@ -73,7 +73,7 @@ class MarkerHandlerHistory extends Component<
       latitude: vehicleLog.latLng.lat,
       longitude: vehicleLog.latLng.lng,
     });
-    point.y += 75;
+    // point.z += 75;
     const coords = await this.mapView.current?.coordinateForPoint(point);
     const camera = {
       center: coords,

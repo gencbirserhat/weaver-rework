@@ -1,6 +1,6 @@
 import React from 'react';
-import { Dimensions, Image, StyleSheet, View, } from 'react-native'
-import Logo from "../assets/logo.png";
+import { Dimensions, Image, ImageURISource, StyleSheet, View, } from 'react-native'
+const Logo: ImageURISource = require("../assets/logo.png");
 const { width, height } = Dimensions.get("window")
 
 const IntroScreen = () => {

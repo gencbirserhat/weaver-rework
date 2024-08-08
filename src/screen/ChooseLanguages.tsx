@@ -1,17 +1,18 @@
-import { StyleSheet, Text, Image, View, SafeAreaView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, Image, View, SafeAreaView, TouchableOpacity, ImageURISource } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Picker } from '@react-native-picker/picker';
 import * as RNLocalize from "react-native-localize"
 import { useNavigation } from '@react-navigation/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import tr from "../assets/Turk.png"
-import en from "../assets/English.png"
 import { useTranslation } from 'react-i18next';
+import { NavigationProp } from '@react-navigation/native';
 
-const ChooseLanguages = () => {
+const tr: ImageURISource  = require("../assets/Turk.png") 
+const en: ImageURISource  = require("../assets/English.png") 
+
+const ChooseLanguages: React.FC = () => {
     const { t, i18n } = useTranslation()
-
+    const navigation = useNavigation<NavigationProp<any>>();
     //console.log("Route", linkTo);
     useEffect(() => {
         (async () => {
@@ -22,7 +23,6 @@ const ChooseLanguages = () => {
         })()
 
     }, [])
-    const navigation = useNavigation()
     // console.log(JSON.parse(JSON.stringify(RNLocalize.getLocales()[0].languageCode)));
     const [lang, setLang] = useState(JSON.parse(JSON.stringify(RNLocalize.getLocales()[0].languageCode)))
         //console.log(lang);

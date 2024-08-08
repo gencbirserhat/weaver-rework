@@ -17,7 +17,7 @@ import { firebase } from '@react-native-firebase/messaging';
 const { width, height } = Dimensions.get("window")
 
 const Menu = ({ navigation }) => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
 
     const [modalVisible, setModalVisible] = useState(false)
 

@@ -1,19 +1,46 @@
-import { StyleSheet, Modal, TouchableWithoutFeedback, Image, View, Alert, ScrollView, SafeAreaView, TouchableOpacity, TextInput } from 'react-native'
+import { StyleSheet, Modal, Image, View, Alert, ScrollView, SafeAreaView, TouchableOpacity, ImageURISource } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { useNavigation } from '@react-navigation/core';
-import PhoneInput from "react-native-phone-number-input";
 import { useTranslation } from 'react-i18next';
-import ArrowBackIosNewRounded from '../assets/ArrowBackIosNewRounded.png'
-import { saveVehicleRequest, updateVehicleRequest } from '../api/controllers/vehicle-controller';
-import { PickerIOS } from '@react-native-picker/picker';
+import { useNavigation, NavigationProp } from '@react-navigation/core';
+import { updateVehicleRequest } from '../api/controllers/vehicle-controller';
 import { IndexPath, Layout, Select, SelectItem } from '@ui-kitten/components';
-import qr from "../assets/Qr.png"
+import translate from '../components/Translate';
 import { findAllSafeZonesRequest } from '../api/controllers/safeZone-controller';
-import { Icon, Input, Text } from '@ui-kitten/components';
-import { RNCamera } from 'react-native-camera';
+import { Input, Text } from '@ui-kitten/components';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
-const Marker = () => {
+const ArrowBackIosNewRounded: ImageURISource= require('../assets/ArrowBackIosNewRounded.png') ;
+const qr: ImageURISource = require("../assets/Qr.png") ;
+
+interface VehicleData {
+    id: string;
+    vehicleName: string;
+    licensePlate: string;
+    imei: string;
+    maxSpeed: number;
+    maintenanceDistance: number;
+    idleAlarmSecond: number;
+    fuelType: string;
+    safeZone?: string;
+    totalDistance: any;
+}
+
+interface SafeZone {
+    id: string;
+    safeZoneName: string;
+}
+
+interface Route {
+    params: {
+        data: VehicleData;
+    };
+}
+
+interface AracEkleEditProps {
+    route: Route;
+}
+
+const Marker: React.FC = () => {
     return (
         <View style={{ height: "40%", width: "60%" }} >
             <View style={{ flexDirection: "row", flex: 1 }}>
@@ -34,79 +61,42 @@ const Marker = () => {
         </View>
     )
 }
-const AracEkleEdit = ({ route }) => {
-    function float2int(value) {
-        return value | 0;
-    }
-    //console.log(route.params.data);
-    const [editData, setEditData] = useState(route.params.data)
-    let maxHız = editData?.maxSpeed.toString()
-    let maintenanceDistance = editData?.maintenanceDistance.toString()
-    let toplamkm = float2int(editData?.totalDistance / 1000).toString()
-    // console.log("dasdas", toplamkm);
-    let rolantiAlarm = editData?.idleAlarmSecond.toString()
-    // console.log("props burada", maxHız);
-    const { t } = useTranslation()
-    const navigation = useNavigation()
+const AracEkleEdit: React.FC<AracEkleEditProps> = ({ route }) => {
+    const { t , i18n} = useTranslation();
+    const navigation = useNavigation<NavigationProp<any>>();
+    const [editData, setEditData] = useState<VehicleData>(route.params.data);
+    const [vehicleName, setVehicleName] = useState<string>(editData?.vehicleName);
+    const [imei, setImei] = useState<string>(editData?.imei);
+    const [maintenanceDistance, setMaintanence] = useState<number>(editData?.maintenanceDistance);
+    const [licencePlate, setLicencePlate] = useState<string>(editData?.licensePlate);
+    const [maxSpeed, setMaxSpeed] = useState<number>(editData?.maxSpeed);
+    const [alarm, setAlarm] = useState<string>(editData?.idleAlarmSecond.toString());
+    const [safeZones, setSafeZones] = useState<SafeZone[]>([]);
+    const [qrModal, setQrModal] = useState<boolean>(false);
     const data = [
-        {
-            title: t('benzin'),
-            value: 'GASOLINE'
-        },
-        {
-            title: t('dizel'),
-            value: 'DIESEL'
-        },
-        {
-            title: t('LPG'),
-            value: 'GAS'
-        },
-        {
-            title: t('elektrik'),
-            value: 'ELECTRIC'
-        }
+        { title: t('benzin'), value: 'GASOLINE' },
+        { title: t('dizel'), value: 'DIESEL' },
+        { title: t('LPG'), value: 'GAS' },
+        { title: t('elektrik'), value: 'ELECTRIC' },
     ];
-    const [vehicleName, setVehicleName] = useState(editData?.vehicleName)
-    const [imei, setImei] = useState(editData?.imei)
-    const [fuel, setFuel] = useState("DIESEL")
-    const [maintanence, setMaintanence] = useState(maintenanceDistance)
-    const [safeZone, setSafeZone] = useState("")
-    const [licencePlate, setLicencePlate] = useState(editData?.licensePlate)
-    const [maxSpeed, setMaxSpeed] = useState(maxHız)
-    const [totalDistance, setTotalDistance] = useState(toplamkm)
-    const [alarm, setAlarm] = useState(rolantiAlarm)
-    const [safeZones, setSafeZones] = useState([])
-    const [id, setId] = useState(editData?.id)
-    //console.log(data);
-    const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(data.findIndex((val) => val.value === editData?.fuelType)));
-
-    // const [selectedIndexSafezone, setSelectedIndexSafezone] = React.useState(safeZones.findIndex((val) => val.id === editData?.safeZone));
-    const [qrModal, setQrModal] = useState(false)
+    const [selectedIndex, setSelectedIndex] = useState<IndexPath>(new IndexPath(data.findIndex((val: any) => val.value === editData?.fuelType)));
 
 
     const fetchSafeZones = async () => {
         let res = await findAllSafeZonesRequest()
         if (res?.data) {
-            // console.log(res?.data)
             setSafeZones(res?.data)
         }
     }
     useEffect(() => {
         fetchSafeZones()
-
-        return () => {
-
-        }
     }, [])
-    //  console.log("selectedIndex",selectedIndex);
-    // console.log(data[selectedIndex.row].value);
-    // console.log(safeZones);
 
     const displayValue = data[selectedIndex.row].title
     //console.log("display", displayValue);
     //const safezoneValue = selectedIndexSafezone !== -1 ? safeZones[selectedIndexSafezone]?.safeZoneName : safeZones[0]?.safeZoneName
 
-    const renderOption = ({ title, i }) => {
+    const renderOption = ({ title, i }: {title: string, i: number}): JSX.Element => {
         //console.log("title", title);
         return (
             <SelectItem style={{ padding: 10 }} title={title} key={i} />
@@ -115,22 +105,20 @@ const AracEkleEdit = ({ route }) => {
     }
 
     const handleCreate = async () => {
-        if (vehicleName === "" || licencePlate === "" || imei === "" || alarm === "" || maxSpeed === "") {
+        if (vehicleName === "" || licencePlate === "" || imei === "" || alarm === "" || maxSpeed === 0) {
             Alert.alert(`${t("hata")}`, `${t("zorunlu_alan")}`)
             return
         }
         //console.log("totals", totalDistance * 1000);
         try {
             let res = await updateVehicleRequest({
-                id: id,
+                id: editData.id,
                 fuelType: data[selectedIndex.row].value,
                 idleAlarmSecond: alarm,
                 imei: imei,
                 licensePlate: licencePlate,
-                maintenanceDistance: maintanence,
+                maintenanceDistance: maintenanceDistance,
                 maxSpeed: maxSpeed,
-                //safeZoneId: safeZones[selectedIndexSafezone]?.id,
-                totalDistance: Number(totalDistance * 1000),
                 vehicleName: vehicleName
             })
 
@@ -145,7 +133,7 @@ const AracEkleEdit = ({ route }) => {
                     ])
             }
 
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
             if (error?.response?.status === 400) {
                 if (Array.isArray(error.response.data.data)) {
@@ -163,7 +151,7 @@ const AracEkleEdit = ({ route }) => {
                 <TouchableOpacity style={styles.buttonTop} onPress={() => navigation.goBack()}>
                     <Image source={ArrowBackIosNewRounded} style={styles.icon} />
                 </TouchableOpacity>
-                <Text style={{ fontSize: 20 }}>{t("arac_duzenle")} </Text>
+                <Text style={{ fontSize: 20 }}>{t("arac_duzenle") || "Edit Vehicle"} </Text>
 
             </View>
             <ScrollView
@@ -202,9 +190,13 @@ const AracEkleEdit = ({ route }) => {
                     <Input
                         label={t("max_hiz")}
                         placeholder={t("max_hiz")}
-                        value={maxSpeed}
-                        onChangeText={setMaxSpeed}
+                        value={maxSpeed.toString()}
+                        onChangeText={text => {
+                            const numericText = text.replace(/[^0-9]/g, '');
+                            setMaxSpeed(Number(numericText));
+                          }}
                         style={styles.input}
+                        keyboardType='numeric'
                     />
                     <Layout style={styles.selectView} level='1'>
                         <Select
@@ -212,7 +204,7 @@ const AracEkleEdit = ({ route }) => {
                             value={displayValue}
                             selectedIndex={selectedIndex}
                             onSelect={(index) => {
-                                setSelectedIndex(index)
+                                setSelectedIndex(index as IndexPath)
                             }}>
                             {data.map((val, i) => renderOption({ title: val?.title, i: i }))}
                         </Select>
@@ -228,9 +220,13 @@ const AracEkleEdit = ({ route }) => {
                     <Input
                         label={t("bakim_km")}
                         placeholder={t("bakim_km")}
-                        value={maintanence}
-                        onChangeText={setMaintanence}
+                        value={maintenanceDistance.toString()}
+                        onChangeText={text => {
+                            const numericText = text.replace(/[^0-9]/g, '');
+                            setMaintanence(Number(numericText));
+                          }}
                         style={styles.input}
+                        keyboardType='numeric'
                     />
                     <Input
                         label={t("alarm")}
@@ -270,7 +266,7 @@ const AracEkleEdit = ({ route }) => {
                         <TouchableOpacity style={styles.buttonTop} onPress={() => setQrModal(false)}>
                             <Image source={ArrowBackIosNewRounded} style={styles.icon} />
                         </TouchableOpacity>
-                        <Text style={{ fontSize: 20 }}>{t('kamera')} </Text>
+                        <Text style={{ fontSize: 20 }}>{t('kamera')}</Text>
                     </View>
                     <QRCodeScanner
                         cameraStyle={{ height: "100%", width: "100%", overflow: 'hidden', alignSelf: 'center' }}

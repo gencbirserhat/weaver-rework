@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   Image,
+  ImageURISource,
   RefreshControl,
   SafeAreaView,
   ScrollView,
@@ -10,11 +11,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Logo from '../assets/logo.png';
-import NotificationsRounded from '../assets/NotificationsRounded.png';
-import DirectionsCarRounded from '../assets/DirectionsCarRounded.png';
-import Statistic from '../assets/Statistic.png';
-import LocalGasStationRounded from '../assets/LocalGasStationRounded.png';
+const Logo: ImageURISource = require('../assets/logo.png');
+const NotificationsRounded: ImageURISource = require('../assets/NotificationsRounded.png');
+const DirectionsCarRounded: ImageURISource = require('../assets/DirectionsCarRounded.png');
+const Statistic: ImageURISource = require('../assets/Statistic.png');
+const LocalGasStationRounded: ImageURISource = require('../assets/LocalGasStationRounded.png');
 import {
   getCurrentFuelPricesRequest,
   getDashBoardStatisticsRequest,
@@ -22,24 +23,37 @@ import {
   getTrackableVehiclesRequest,
 } from '../api/controllers/vehicle-controller';
 const {width, height} = Dimensions.get('window');
-import Carousel from '@demfabris/react-native-snap-carousel';
+import Carousel, {Pagination} from '@demfabris/react-native-snap-carousel';
 import {useTranslation} from 'react-i18next';
-const Dashboard = ({navigation}) => {
+
+interface DashboardProps {
+  navigation: {
+    navigate: (screen: string) => void;
+  };
+}
+
+interface VehicleData {
+  licensePlate: string;
+  totalDistance: number;
+  distanceSinceIgnitionKm: number;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({navigation}) => {
   const {t} = useTranslation();
 
-  const [oil, setOil] = useState('');
-  const [diesel, setDiesel] = useState('');
-  const [gas, setGas] = useState('');
-  const [openVehicleCount, setOpenVehicleCount] = useState('');
-  const [closedVehicleCount, setClosedVehicleCount] = useState('');
-  const [totalVehicleCount, setTotalVehicleCount] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
+  const [oil, setOil] = useState<string>('');
+  const [diesel, setDiesel] = useState<string>('');
+  const [gas, setGas] = useState<string>('');
+  const [openVehicleCount, setOpenVehicleCount] = useState<string>('');
+  const [closedVehicleCount, setClosedVehicleCount] = useState<string>('');
+  const [totalVehicleCount, setTotalVehicleCount] = useState<string>('');
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const [dailyDistance, setDailyDistance] = useState('');
-  const [ignitionDistance, setİgnitionDistance] = useState('');
-  const [data, setData] = useState([]);
+  const [dailyDistance, setDailyDistance] = useState<string>('');
+  const [ignitionDistance, setİgnitionDistance] = useState<string>('');
+  const [data, setData] = useState<VehicleData[]>([]);
 
-  function float2int(value) {
+  function float2int(value: number): number {
     return value | 0;
   }
   const fetchFuelPrice = async () => {
@@ -100,7 +114,9 @@ const Dashboard = ({navigation}) => {
     return () => {};
   }, []);
 
-  const _renderItem = ({item, index}) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  console.log(activeIndex);
+  const _renderItem = ({item, index}: {item: VehicleData; index: number}) => {
     return (
       <View style={styles.container}>
         <View style={styles.headerSlider}>
@@ -258,14 +274,31 @@ const Dashboard = ({navigation}) => {
                     </View> */}
         </View>
         <Carousel
-          autoplay={true}
-          autoplayDelay={3}
-          loop={true}
+        loop={false}
+          onSnapToItem={index => setActiveIndex(index)}
           data={data}
           renderItem={_renderItem}
           sliderWidth={width * 0.95}
           itemWidth={width * 0.95}
-          slideStyle={null}></Carousel>
+        />
+        <Pagination
+        
+          dotsLength={data.length}
+          activeDotIndex={activeIndex}
+          dotStyle={{
+            marginBottom: 20,
+            width: 8,
+            height: 8,
+            borderRadius: 5,
+            marginHorizontal: -2,
+            backgroundColor: 'black',
+          }}
+          inactiveDotStyle={{
+            backgroundColor: '#D05515',
+          }}
+          inactiveDotOpacity={1}
+          inactiveDotScale={0.6}
+        />
       </ScrollView>
     </SafeAreaView>
   );
